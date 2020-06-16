@@ -82,7 +82,8 @@ class ProductController extends AbstractFOSRestController
         ]);
         $form->submit($request->request->all());
         if (!$handler->isPostValid($form)) {
-            throw new \Exception('Input is not valid');
+            $formErrors = (string) $form->getErrors(true, false);
+            throw new \Exception('Validation error: ' . $formErrors);
         }
 
         $product = $handler->persist($form);
@@ -118,7 +119,8 @@ class ProductController extends AbstractFOSRestController
         ]);
         $form->submit($request->request->all(), false);
         if (!$handler->isPatchValid($form)) {
-            throw new \Exception('Input data is not valid');
+            $formErrors = (string) $form->getErrors(true, false);
+            throw new \Exception('Validation error: ' . $formErrors);
         }
 
         $handler->persist($form);

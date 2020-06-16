@@ -40,9 +40,6 @@ class CategoryType extends AbstractType
         $builder
             ->add('title')
             ->add('eid', IntegerType::class)
-            ->add('products', EntityType::class, [
-                'class' => Product::class
-            ])
         ;
     }
 
@@ -51,7 +48,7 @@ class CategoryType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Category::class,
             'csrf_protection' => false,
-            'allow_extra_fields' => false,
+            'allow_extra_fields' => true,
             'http_method' => 'POST'
         ]);
 

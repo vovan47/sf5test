@@ -88,7 +88,7 @@ class ImportDataCommand extends Command
                 $contents .= fread(STDIN, 1024);
             }
         } else {
-            throw new \RuntimeException("Please provide a filename or pipe template content to STDIN.");
+            throw new \RuntimeException("Please provide a filename or pipe JSON content to STDIN.");
         }
 
         $output->writeln('Starting import');
@@ -123,7 +123,8 @@ class ImportDataCommand extends Command
                 $row['eid'] = $row['eId'];
                 $form->submit($row);
                 if (!$handler->isPostValid($form)) {
-                    throw new \Exception(sprintf('Row %s is not valid', var_export($row)));
+                    $formErrors = (string) $form->getErrors(true, false);
+                    throw new \Exception('Validation error: ' . $formErrors);
                 }
 
                 $category = $handler->persist($form);
@@ -166,7 +167,8 @@ class ImportDataCommand extends Command
 
                 $form->submit($row);
                 if (!$handler->isPostValid($form)) {
-                    throw new \Exception(sprintf('Row %s is not valid', var_export($row)));
+                    $formErrors = (string) $form->getErrors(true, false);
+                    throw new \Exception('Validation error: ' . $formErrors);
                 }
 
                 $product = $handler->persist($form);

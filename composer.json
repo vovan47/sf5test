@@ -7,6 +7,7 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "ext-json": "*",
+        "doctrine/annotations": "^1.10",
         "friendsofsymfony/rest-bundle": "^3.0",
         "fzaninotto/faker": "^1.9",
         "jms/serializer-bundle": "^3.6",
@@ -19,6 +20,7 @@
         "symfony/orm-pack": "^1.0",
         "symfony/serializer": "5.1.*",
         "symfony/twig-bundle": "5.1.*",
+        "symfony/validator": "5.1.*",
         "symfony/yaml": "5.1.*",
         "zircote/swagger-php": "^3.0"
     },
@@ -26,7 +28,7 @@
         "doctrine/doctrine-fixtures-bundle": "^3.3",
         "liip/functional-test-bundle": "^4.0.0",
         "symfony/maker-bundle": "^1.19",
-        "symfony/phpunit-bridge": "^5.1",
+        "symfony/phpunit-bridge": "^5.1"
     },
     "config": {
         "optimize-autoloader": true,

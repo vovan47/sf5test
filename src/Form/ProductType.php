@@ -55,7 +55,7 @@ class ProductType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Product::class,
             'csrf_protection' => false,
-            'allow_extra_fields' => false,
+            'allow_extra_fields' => true,
             'http_method' => 'POST'
         ]);
 

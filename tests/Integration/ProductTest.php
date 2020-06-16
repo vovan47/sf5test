@@ -40,8 +40,8 @@ class ProductTest extends AbstractTestCase
     {
         $faker = \Faker\Factory::create();
         $baseData = [
-            'title' => $faker->word(),
-            'price' => $faker->randomFloat(2),
+            'title' => substr($faker->sentence(), 0, 12),
+            'price' => $faker->randomFloat(2, 0, 200),
             'eid' => $faker->randomNumber(),
         ];
 
@@ -199,8 +199,8 @@ class ProductTest extends AbstractTestCase
         $faker = \Faker\Factory::create();
         $requestData = self::getValidDataForProduct();
         $updateData = [
-            'title' => $faker->word(),
-            'price' => $faker->randomFloat(2),
+            'title' => substr($faker->sentence(), 0, 12),
+            'price' => $faker->randomFloat(2, 0, 200),
         ];
 
         self::createProduct($requestData);
