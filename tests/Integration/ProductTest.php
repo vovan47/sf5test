@@ -41,7 +41,7 @@ class ProductTest extends AbstractTestCase
         $faker = \Faker\Factory::create();
         $baseData = [
             'title' => $faker->word(),
-            'price' => $faker->randomFloat(),
+            'price' => $faker->randomFloat(2),
             'eid' => $faker->randomNumber(),
         ];
 
@@ -94,6 +94,25 @@ class ProductTest extends AbstractTestCase
     }
 
     /**
+     * API update Product
+     *
+     * @param string $id
+     * @param array  $data
+     *
+     * @return null|Response
+     */
+    protected static function updateProduct($id, array $data)
+    {
+        $client = AbstractTestCase::getClient();
+        $client->request(
+            'PATCH',
+            '/api/products/' . $id,
+            $data
+        );
+        return $client->getResponse();
+    }
+
+    /**
      * Test success POST action
      * @group product
      *
@@ -121,7 +140,7 @@ class ProductTest extends AbstractTestCase
 
     /**
      * Test success GET action
-     * @group theme
+     * @group product
      *
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Exception
@@ -146,5 +165,39 @@ class ProductTest extends AbstractTestCase
         unset($resultData['categoryIds']);
 
         self::assertSame($requestData, $resultData);
+    }
+
+    /**
+     * Test success PATCH action
+     * @group product
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Exception
+     */
+    public function testPatch()
+    {
+        self::clearDb();
+
+        $faker = \Faker\Factory::create();
+        $requestData = self::getValidDataForProduct();
+        $updateData = [
+            'title' => $faker->word(),
+            'price' => $faker->randomFloat(2),
+        ];
+
+        self::createProduct($requestData);
+        $id = self::getLastInsertedProductId();
+        $responseBeforePatch = self::getResponseArray(self::getProduct($id));
+
+        $response = self::updateProduct($id, $updateData);
+
+        self::assertEquals(Response::HTTP_NO_CONTENT, $response->getStatusCode());
+        self::assertNull(self::getResponseArray($response));
+
+        $responseAfterPatch = self::getResponseArray(self::getProduct($id));
+
+        self::assertNotEquals($responseBeforePatch['result']['title'], $responseAfterPatch['result']['title']);
+        self::assertNotEquals($responseBeforePatch['result']['price'], $responseAfterPatch['result']['price']);
     }
 }

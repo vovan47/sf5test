@@ -74,7 +74,6 @@ class ProductController extends AbstractFOSRestController
         $handler = $this->productService;
         $form = $handler->createForm(null, [
             'http_method' => 'POST',
-            //'validation_groups' => ['POST']
         ]);
         $form->submit($request->request->all());
         if (!$handler->isPostValid($form)) {
@@ -88,5 +87,34 @@ class ProductController extends AbstractFOSRestController
             'result' => $product,
         ];
         return View::create($data, Response::HTTP_CREATED);
+    }
+
+    /**
+     * @Annotations\Patch("products/{id}")
+     *
+     * @param Request $request
+     * @param Product $product
+     *
+     * @ParamConverter("Product", class="App:Product")
+     *
+     * @return \FOS\RestBundle\View\View
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Exception
+     */
+    public function patchAction(Request $request, Product $product)
+    {
+        $handler = $this->productService;
+        $form = $handler->createForm($product, [
+            'http_method' => 'PATCH',
+        ]);
+        $form->submit($request->request->all(), false);
+        if (!$handler->isPatchValid($form)) {
+            throw new \Exception('Input data is not valid');
+        }
+
+        $handler->persist($form);
+        $handler->flush();
+
+        return View::create('', Response::HTTP_NO_CONTENT);
     }
 }

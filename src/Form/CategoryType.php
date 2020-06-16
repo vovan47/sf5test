@@ -4,8 +4,8 @@ namespace App\Form;
 
 use App\Entity\Category;
 use App\Entity\Product;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -39,8 +39,8 @@ class CategoryType extends AbstractType
         $builder
             ->add('title')
             ->add('eid', IntegerType::class)
-            ->add('products', EntityType::class, [
-                'class' => Product::class
+            ->add('products', CollectionType::class, [
+                'entry_type' => Product::class
             ])
         ;
     }
