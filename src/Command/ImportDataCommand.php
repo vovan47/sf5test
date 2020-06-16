@@ -34,7 +34,12 @@ class ImportDataCommand extends Command
      */
     protected $productService;
 
-    public function __construct(?string $name = null, EntityManagerInterface $em, CategoryService $categoryService, ProductService $productService)
+    public function __construct(
+        ?string $name = null,
+        EntityManagerInterface $em,
+        CategoryService $categoryService,
+        ProductService $productService
+    )
     {
         $this->em = $em;
         $this->categoryService = $categoryService;
@@ -58,12 +63,12 @@ class ImportDataCommand extends Command
                 'f',
                 InputOption::VALUE_REQUIRED,
                 'Path to file with JSON data'
-            )
-        ;
+            );
     }
 
     /**
      * {@inheritdoc}
+     * @throws \Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -90,7 +95,7 @@ class ImportDataCommand extends Command
         if ($type === self::TYPE_CATEGORY) {
             $count = $this->importCategories($contents);
         } else if ($type === self::TYPE_PRODUCT) {
-            $count =  $this->importProducts($contents);
+            $count = $this->importProducts($contents);
         }
         $output->writeln(sprintf('Imported %d entities of type "%s"', $count, $type));
         $output->writeln('Finished import');
@@ -126,7 +131,7 @@ class ImportDataCommand extends Command
 
                 $count++;
             } catch (\Exception $e) {
-                $this->output->writeln(sprintf('Error on row %d: %s', $key+1, $e->getMessage()));
+                $this->output->writeln(sprintf('Error on row %d: %s', $key + 1, $e->getMessage()));
             }
         }
         return $count;
@@ -140,6 +145,7 @@ class ImportDataCommand extends Command
     protected function importProducts($content)
     {
         $handler = $this->productService;
+        $categoryService = $this->categoryService;
         $array = json_decode($content, true);
         if (!is_array($array)) {
             throw new \Exception('Invalid JSON');
@@ -151,7 +157,13 @@ class ImportDataCommand extends Command
                     'http_method' => 'POST',
                 ]);
                 $row['eid'] = $row['eId'];
-                $row['categories'] = $row['categoriesEId'] ?? $row['categoryEId'] ?? null;
+                $categoryEids = $row['categoriesEId'] ?? $row['categoryEId'] ?? null;
+                if (!empty($categoryEids)) {
+                    $result = $categoryService->getRepository()->findByEids($categoryEids);
+                    $categoryIds = array_column($result, "id");
+                }
+                $row['categories'] = $categoryIds;
+
                 $form->submit($row);
                 if (!$handler->isPostValid($form)) {
                     throw new \Exception(sprintf('Row %s is not valid', var_export($row)));
@@ -162,8 +174,7 @@ class ImportDataCommand extends Command
 
                 $count++;
             } catch (\Exception $e) {
-                $this->output->writeln(sprintf('Error on row %d: %s', $key+1, $e->getMessage()));
-                $this->output->writeln('Row content: ' . var_export($row));
+                $this->output->writeln(sprintf('Error on row %d: %s', $key + 1, $e->getMessage()));
             }
         }
         return $count;

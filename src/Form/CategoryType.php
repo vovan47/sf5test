@@ -9,6 +9,7 @@ use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 class CategoryType extends AbstractType
 {
@@ -39,8 +40,8 @@ class CategoryType extends AbstractType
         $builder
             ->add('title')
             ->add('eid', IntegerType::class)
-            ->add('products', CollectionType::class, [
-                'entry_type' => Product::class
+            ->add('products', EntityType::class, [
+                'class' => Product::class
             ])
         ;
     }
