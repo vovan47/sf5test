@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\Annotations\View as FOSView;
 use FOS\RestBundle\Controller\Annotations;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ProductController extends AbstractFOSRestController
 {
@@ -114,6 +115,28 @@ class ProductController extends AbstractFOSRestController
 
         $handler->persist($form);
         $handler->flush();
+
+        return View::create('', Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * @Annotations\Delete("products/{id}")
+     *
+     * @param Product $product
+     *
+     * @ParamConverter("Product", class="App:Product")
+     *
+     * @return \FOS\RestBundle\View\View
+     */
+    public function deleteAction(Product $product)
+    {
+        if (!$product instanceof Product) {
+            throw new NotFoundHttpException();
+        }
+
+        $handler = $this->productService;
+        $handler->getEm()->remove($product);
+        $handler->getEm()->flush();
 
         return View::create('', Response::HTTP_NO_CONTENT);
     }

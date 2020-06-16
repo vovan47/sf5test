@@ -24,6 +24,11 @@ abstract class AbstractService
         $this->formClassName = $formClassName;
     }
 
+    public function getEm()
+    {
+        return $this->em;
+    }
+
     /**
      * @param FormFactoryInterface $formFactory
      */

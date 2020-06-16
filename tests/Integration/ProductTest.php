@@ -113,6 +113,23 @@ class ProductTest extends AbstractTestCase
     }
 
     /**
+     * API delete Product
+     *
+     * @param string $id
+     *
+     * @return null|Response
+     */
+    protected static function deleteProduct($id)
+    {
+        $client = AbstractTestCase::getClient();
+        $client->request(
+            'DELETE',
+            '/api/products/' . $id
+        );
+        return $client->getResponse();
+    }
+
+    /**
      * Test success POST action
      * @group product
      *
@@ -199,5 +216,31 @@ class ProductTest extends AbstractTestCase
 
         self::assertNotEquals($responseBeforePatch['result']['title'], $responseAfterPatch['result']['title']);
         self::assertNotEquals($responseBeforePatch['result']['price'], $responseAfterPatch['result']['price']);
+    }
+
+    /**
+     * Test success PATCH action
+     * @group product
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Exception
+     */
+    public function testDelete()
+    {
+        self::clearDb();
+
+        // GIVEN
+        $requestData = self::getValidDataForProduct();
+        self::createProduct($requestData);
+        $id = self::getLastInsertedProductId();
+        self::assertIsInt($id);
+        // WHEN
+        $response = self::deleteProduct($id);
+        self::assertEquals(Response::HTTP_NO_CONTENT, $response->getStatusCode());
+        self::assertNull(self::getResponseArray($response));
+
+        $responseAfterDelete = self::getProduct($id);
+        self::assertEquals($responseAfterDelete->getStatusCode(), Response::HTTP_NOT_FOUND);
     }
 }
