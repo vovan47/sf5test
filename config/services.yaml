@@ -41,5 +41,7 @@ services:
         arguments: [App\Form\CategoryType]
 
     App\EventListener\ProductActivitySubscriber:
+        arguments:
+            $adminEmail: '%env(ADMIN_EMAIL)%'
         tags:
             - { name: 'doctrine.event_subscriber' }

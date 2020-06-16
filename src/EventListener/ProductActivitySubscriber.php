@@ -24,10 +24,18 @@ class ProductActivitySubscriber implements EventSubscriber
      */
     protected $logger;
 
-    public function __construct(MailerInterface $mailer, LoggerInterface $logger)
+    /**
+     * Email that will receive Product updates
+     *
+     * @var string
+     */
+    protected $adminEmail;
+
+    public function __construct(MailerInterface $mailer, LoggerInterface $logger, $adminEmail)
     {
         $this->mailer = $mailer;
         $this->logger = $logger;
+        $this->adminEmail = $adminEmail;
     }
 
     public function getSubscribedEvents()
@@ -69,10 +77,10 @@ class ProductActivitySubscriber implements EventSubscriber
         }
 
         $email = (new Email())
-            ->from('hello@example.com')
-            ->to('you@example.com')
+            ->from('admin@localhost.com')
+            ->to($this->adminEmail)
             ->subject(sprintf('Product with id = %s updated', $entity->getId()))
-            ->text(sprintf('Product updated, last action was %s', $action));
+            ->text(sprintf('Product updated, last action was "%s"', $action));
         try {
             $this->mailer->send($email);
         } catch (TransportExceptionInterface $e) {
