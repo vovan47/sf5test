@@ -10,7 +10,11 @@ Features:
 
 ## Local installation:
 
-Clone app, go to app directory
+Clone this repo, go to app directory
+
+`$ git clone https://github.com/vovan47/sf5test.git && cd sf5test`
+
+Create `.env` file from `.env.dist`:
 
 `$ cp .env.dist .env`
 
