@@ -50,6 +50,10 @@ class ProductController extends AbstractFOSRestController
      */
     public function getProductAction(Product $product)
     {
+        if (!$product instanceof Product) {
+            throw new NotFoundHttpException();
+        }
+
         $data = [
             'result' => $product,
         ];
@@ -104,6 +108,10 @@ class ProductController extends AbstractFOSRestController
      */
     public function patchAction(Request $request, Product $product)
     {
+        if (!$product instanceof Product) {
+            throw new NotFoundHttpException();
+        }
+
         $handler = $this->productService;
         $form = $handler->createForm($product, [
             'http_method' => 'PATCH',
