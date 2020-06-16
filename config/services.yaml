@@ -25,3 +25,13 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    app.service.abstract:
+        abstract:  true
+        public: true
+        calls:
+            - [setFormFactory, ["@form.factory"]]
+
+    App\Service\ProductService:
+        parent: app.service.abstract
+        arguments: [App\Form\ProductType]

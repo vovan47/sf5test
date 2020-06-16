@@ -2,15 +2,16 @@
 
 namespace App\Form;
 
-use App\Entity\Category;
 use App\Entity\Product;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use App\Entity\Category;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class CategoryForm extends AbstractType
+class ProductType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -38,17 +39,18 @@ class CategoryForm extends AbstractType
     {
         $builder
             ->add('title')
-            ->add('eid', IntegerType::class)
-            ->add('products', EntityType::class, [
-                'class' => Product::class
+            ->add('categories', CollectionType::class, [
+                'entry_type' => Category::class,
             ])
+            ->add('price', NumberType::class)
+            ->add('eid', IntegerType::class)
         ;
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Category::class,
+            'data_class' => Product::class,
             'csrf_protection' => false,
             'allow_extra_fields' => false,
             'http_method' => 'POST'

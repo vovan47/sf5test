@@ -57,31 +57,36 @@ class ProductController extends AbstractFOSRestController
     }
 
     /**
-     * @Annotations\Post("themes")
+     * @Annotations\Post("products")
      *
      * @param Request $request
      *
      * @FOSView(serializerGroups={
      *     "app-product-default",
-     *     "app-category-default",
      * })
      *
      * @return \FOS\RestBundle\View\View
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Exception
      */
     public function postAction(Request $request)
     {
         $handler = $this->productService;
         $form = $handler->createForm(null, [
             'http_method' => 'POST',
-            'validation_groups' => ['POST']
+            //'validation_groups' => ['POST']
         ]);
         $form->submit($request->request->all());
         if (!$handler->isPostValid($form)) {
-            $this->throwRestUnprocessableFormException($form);
+            throw new \Exception('Input is not valid');
         }
 
-        $theme = $handler->persist($form);
+        $product = $handler->persist($form);
         $handler->flush();
-        return $this->createRestPostResourceView($theme);
+
+        $data = [
+            'result' => $product,
+        ];
+        return View::create($data, Response::HTTP_CREATED);
     }
 }
