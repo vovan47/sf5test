@@ -35,3 +35,7 @@ services:
     App\Service\ProductService:
         parent: app.service.abstract
         arguments: [App\Form\ProductType]
+
+    App\Service\CategoryService:
+        parent: app.service.abstract
+        arguments: [App\Form\CategoryType]
