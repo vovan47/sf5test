@@ -93,6 +93,9 @@
     "doctrine/sql-formatter": {
         "version": "1.1.0"
     },
+    "egulias/email-validator": {
+        "version": "2.1.17"
+    },
     "friendsofsymfony/rest-bundle": {
         "version": "2.2",
         "recipe": {
@@ -169,6 +172,9 @@
     },
     "liip/functional-test-bundle": {
         "version": "4.2.0"
+    },
+    "monolog/monolog": {
+        "version": "2.1.0"
     },
     "myclabs/deep-copy": {
         "version": "1.9.5"
@@ -392,6 +398,18 @@
     "symfony/intl": {
         "version": "v5.1.2"
     },
+    "symfony/mailer": {
+        "version": "4.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "4.3",
+            "ref": "15658c2a0176cda2e7dba66276a2030b52bd81b2"
+        },
+        "files": [
+            "config/packages/mailer.yaml"
+        ]
+    },
     "symfony/maker-bundle": {
         "version": "1.0",
         "recipe": {
@@ -400,6 +418,27 @@
             "version": "1.0",
             "ref": "fadbfe33303a76e25cb63401050439aa9b1a9c7f"
         }
+    },
+    "symfony/mime": {
+        "version": "v5.1.2"
+    },
+    "symfony/monolog-bridge": {
+        "version": "v5.1.2"
+    },
+    "symfony/monolog-bundle": {
+        "version": "3.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "3.3",
+            "ref": "d7249f7d560f6736115eee1851d02a65826f0a56"
+        },
+        "files": [
+            "config/packages/dev/monolog.yaml",
+            "config/packages/prod/deprecations.yaml",
+            "config/packages/prod/monolog.yaml",
+            "config/packages/test/monolog.yaml"
+        ]
     },
     "symfony/options-resolver": {
         "version": "v5.1.2"
@@ -426,6 +465,9 @@
         "version": "v1.17.0"
     },
     "symfony/polyfill-intl-icu": {
+        "version": "v1.17.0"
+    },
+    "symfony/polyfill-intl-idn": {
         "version": "v1.17.0"
     },
     "symfony/polyfill-intl-normalizer": {

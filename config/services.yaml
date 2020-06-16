@@ -39,3 +39,7 @@ services:
     App\Service\CategoryService:
         parent: app.service.abstract
         arguments: [App\Form\CategoryType]
+
+    App\EventListener\ProductActivitySubscriber:
+        tags:
+            - { name: 'doctrine.event_subscriber' }
