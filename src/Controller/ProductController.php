@@ -7,11 +7,10 @@ use App\Service\ProductService;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use FOS\RestBundle\Controller\Annotations\View as FOSView;
 use FOS\RestBundle\Controller\Annotations;
+use Symfony\Component\HttpFoundation\Request;
 
 class ProductController extends AbstractFOSRestController
 {
@@ -27,6 +26,8 @@ class ProductController extends AbstractFOSRestController
 
     /**
      * @Annotations\Get("products")
+     *
+     * @FOSView(serializerGroups={"app-product-default", "app-category-default"})
      */
     public function getProductsAction()
     {
@@ -53,5 +54,34 @@ class ProductController extends AbstractFOSRestController
         ];
 
         return View::create($data, Response::HTTP_OK);
+    }
+
+    /**
+     * @Annotations\Post("themes")
+     *
+     * @param Request $request
+     *
+     * @FOSView(serializerGroups={
+     *     "app-product-default",
+     *     "app-category-default",
+     * })
+     *
+     * @return \FOS\RestBundle\View\View
+     */
+    public function postAction(Request $request)
+    {
+        $handler = $this->productService;
+        $form = $handler->createForm(null, [
+            'http_method' => 'POST',
+            'validation_groups' => ['POST']
+        ]);
+        $form->submit($request->request->all());
+        if (!$handler->isPostValid($form)) {
+            $this->throwRestUnprocessableFormException($form);
+        }
+
+        $theme = $handler->persist($form);
+        $handler->flush();
+        return $this->createRestPostResourceView($theme);
     }
 }

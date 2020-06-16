@@ -10,6 +10,13 @@ use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity(repositoryClass=ProductRepository::class)
+ *
+ * @Serializer\ExclusionPolicy("all")
+ * @Serializer\VirtualProperty(
+ *     "categoryIds",
+ *     exp="object.getCategoryIds()",
+ *     options={@Serializer\SerializedName("categories")}
+ *  )
  */
 class Product
 {
@@ -27,8 +34,7 @@ class Product
     /**
      * @ORM\ManyToMany(targetEntity=Category::class, inversedBy="products")
      *
-     * @Serializer\Expose
-     * @Serializer\Groups({"app-product-default"})
+     * @Serializer\Groups({"app-product-extra"})
      */
     private $categories;
 
@@ -56,6 +62,14 @@ class Product
      */
     private $eid;
 
+    /**
+     * @Serializer\ReadOnly
+     * @Serializer\Expose
+     * @Serializer\Accessor(getter="getCategoryIds")
+     * @Serializer\Groups({"app-product-default"})
+     */
+    private $categoryIds;
+
     public function __construct()
     {
         $this->categories = new ArrayCollection();
@@ -72,6 +86,15 @@ class Product
     public function getCategories(): Collection
     {
         return $this->categories;
+    }
+
+    public function getCategoryIds(): array
+    {
+        $result = [];
+        foreach ($this->categories as $category) {
+            $result[] = $category->getId();
+        }
+        return $result;
     }
 
     public function addCategory(Category $category): self

@@ -6,9 +6,17 @@ use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity(repositoryClass=CategoryRepository::class)
+ *
+ * @Serializer\ExclusionPolicy("all")
+ * @Serializer\VirtualProperty(
+ *     "productIds",
+ *     exp="object.getProductyIds()",
+ *     options={@Serializer\SerializedName("products")}
+ *  )
  */
 class Category
 {
@@ -16,23 +24,43 @@ class Category
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     *
+     * @Serializer\ReadOnly
+     * @Serializer\Expose
+     * @Serializer\Groups({"app-category-default"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     *
+     * @Serializer\Expose
+     * @Serializer\Groups({"app-category-default"})
      */
     private $title;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     *
+     * @Serializer\Expose
+     * @Serializer\Groups({"app-category-default"})
      */
     private $eid;
 
     /**
      * @ORM\ManyToMany(targetEntity=Product::class, mappedBy="categories")
+     *
+     * @Serializer\Groups({"app-category-extra"})
      */
     private $products;
+
+    /**
+     * @Serializer\ReadOnly
+     * @Serializer\Expose
+     * @Serializer\Accessor(getter="getProductIds")
+     * @Serializer\Groups({"app-category-default"})
+     */
+    private $productIds;
 
     public function __construct()
     {
@@ -74,6 +102,15 @@ class Category
     public function getProducts(): Collection
     {
         return $this->products;
+    }
+
+    public function getProductIds(): array
+    {
+        $result = [];
+        foreach ($this->products as $product) {
+            $result[] = $product->getId();
+        }
+        return $result;
     }
 
     public function addProduct(Product $product): self
